@@ -41,5 +41,5 @@ class Journal(Model):
 
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User], safe=True)
+    DATABASE.create_tables([User, Journal], safe=True)
     DATABASE.close()
