@@ -27,7 +27,7 @@ class User(UserMixin, Model):
 
 
 class Journal(Model):
-    user = ForeignKeyField(rel_model=User, related_name='journals')
+    user = ForeignKeyField(model=User, related_name='journals')
     pub_date = DateTimeField(default=datetime.datetime.now)
     title = CharField(max_length=30)
     date = DateTimeField()

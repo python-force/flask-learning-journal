@@ -30,6 +30,24 @@ def after_request(response):
     g.db.close()
     return response
 
+@app.route('/')
+def index():
+    all_journals = models.Journal.select()
+    return render_template('index.html', all_journals=all_journals)
+
+@app.route('/entry', methods=('GET', 'POST'))
+def createjournal():
+    form = forms.JournalForm()
+    if form.validate_on_submit():
+        models.Journal.create(user=g.user.id,
+                              title=form.title.data,
+                              time_spent=form.time_spent.data,
+                              learned=form.learned.data,
+                              resources=form.resources.data)
+        flash("Journal Posted! Thanks!", "success")
+        return redirect(url_for('index'))
+    return render_template('new.html', form=form)
+
 if __name__ == '__main__':
     models.initialize()
     app.run(debug=DEBUG, host=HOST, port=PORT)
