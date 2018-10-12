@@ -1,6 +1,8 @@
 from flask import Flask, g, render_template, flash, url_for, redirect
 from flask_bcrypt import check_password_hash
 from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_pagedown import PageDown
+from flaskext.markdown import Markdown
 
 import forms
 import models
@@ -15,6 +17,9 @@ app.secret_key = 'sd7sa76v8*&%7asf7656#dsjksadjwaalcma.caskascjhavs'
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+
+pagedown = PageDown(app)
+Markdown(app)
 
 
 @app.before_request
@@ -71,6 +76,17 @@ def index():
     all_journals = models.Journal.select()
     return render_template('index.html', all_journals=all_journals)
 
+@app.route('/entries')
+@app.route('/entries/<slug>')
+def entries(slug=None):
+    template = 'index.html'
+    all_journals = models.Journal.select()
+    context = all_journals
+    if slug != None:
+        context = models.Journal.select().where(models.Journal.slug==slug).get()
+        template = 'detail.html'
+    return render_template(template, context=context)
+
 @app.route('/entry', methods=('GET', 'POST'))
 @login_required
 def createjournal():
@@ -78,6 +94,7 @@ def createjournal():
     if form.validate_on_submit():
         models.Journal.create(user=g.user.id,
                               title=form.title.data,
+                              date=form.date.data,
                               time_spent=form.time_spent.data,
                               learned=form.learned.data,
                               resources=form.resources.data)

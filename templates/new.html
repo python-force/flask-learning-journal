@@ -1,3 +1,5 @@
+{{ pagedown.include_pagedown() }}
+
 {% extends 'base.html' %}
 
 {% from 'macros.html' import render_field %}
@@ -13,7 +15,7 @@
                 {{ render_field(form.date) }}
                 {{ render_field(form.time_spent) }}
                 {{ render_field(form.learned) }}
-                {{ render_field(form.resources) }}
+                {{ form.resources(rows=10) }}
                 <input type="submit" value="Publish Entry" class="button">
                 <a href="#" class="button button-secondary">Cancel</a>
             </form>

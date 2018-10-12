@@ -4,6 +4,8 @@ from wtforms import StringField, PasswordField, TextAreaField, IntegerField
 from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, DataRequired, Email, Regexp, Length, EqualTo
 
+from flask_pagedown.fields import PageDownField
+
 from models import User
 
 def email_exist(form, field):
@@ -42,4 +44,4 @@ class JournalForm(Form):
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired()])
     learned = TextAreaField('What I learned', validators=[DataRequired()])
-    resources = TextAreaField('Resources to Remember', validators=[DataRequired()])
+    resources = PageDownField('Resources to Remember', validators=[DataRequired()])
