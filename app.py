@@ -87,17 +87,16 @@ def entries(slug=None):
         template = 'detail.html'
     return render_template(template, context=context)
 
-@app.route('/entries/edit/<slug>')
+@app.route('/entries/edit/<slug>', methods=('GET', 'POST'))
 def editentry(slug=None):
     context = models.Journal.select().where(models.Journal.slug == slug).get()
     form = forms.JournalForm()
     if form.validate_on_submit():
-        models.Journal.create(user=g.user.id,
-                              title=form.title.data,
+        models.Journal.update(title=form.title.data,
                               date=form.date.data,
                               time_spent=form.time_spent.data,
                               learned=form.learned.data,
-                              resources=form.resources.data)
+                              resources=form.resources.data).where(models.Journal.slug == slug).execute()
         flash("Journal Posted! Thanks!", "success")
         return redirect(url_for('index'))
     else:
