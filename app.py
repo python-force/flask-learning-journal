@@ -114,6 +114,16 @@ def deleteentry(slug=None):
     flash("Journal Deleted!", "success")
     return redirect(url_for('index'))
 
+@app.route('/addtag', methods=('GET', 'POST'))
+@login_required
+def createtag():
+    form = forms.TagForm()
+    if form.validate_on_submit():
+        models.Tag.create(title=form.title.data,)
+        flash("Tag Created! Thanks!", "success")
+        return redirect(url_for('index'))
+    return render_template('addtag.html', form=form)
+
 @app.route('/entry', methods=('GET', 'POST'))
 @login_required
 def createjournal():
@@ -128,6 +138,21 @@ def createjournal():
         flash("Journal Posted! Thanks!", "success")
         return redirect(url_for('index'))
     return render_template('new.html', form=form)
+
+@app.route('/tags')
+@app.route('/tags/<slug>')
+def tags(slug=None):
+    template = 'tags.html'
+    all_tags = models.Tag.select()
+    context = all_tags
+    if slug != None:
+        context = (models.Journal
+                           .select()
+                           .join(models.TagJornal)
+                           .join(models.Tag)
+                           .where(models.Tag.slug == slug))
+        template = 'index.html'
+    return render_template(template, context=context)
 
 if __name__ == '__main__':
     models.initialize()

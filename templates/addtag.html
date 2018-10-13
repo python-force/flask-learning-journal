@@ -1,5 +1,3 @@
-{{ pagedown.include_pagedown() }}
-
 {% extends 'base.html' %}
 
 {% from 'macros.html' import render_field %}
@@ -8,16 +6,11 @@
 <section>
     <div class="container">
         <div class="new-entry">
-            <h2>New Entry</h2>
+            <h2>New Tag</h2>
             <form method='POST' action=''>
                 {{ form.hidden_tag() }}
-                {{ render_field(form.tags) }}
                 {{ render_field(form.title) }}
-                {{ render_field(form.date) }}
-                {{ render_field(form.time_spent) }}
-                {{ render_field(form.learned) }}
-                {{ form.resources(rows=10) }}
-                <input type="submit" value="Publish Entry" class="button">
+                <input type="submit" value="Add Tag" class="button">
                 <a href="#" class="button button-secondary">Cancel</a>
             </form>
         </div>

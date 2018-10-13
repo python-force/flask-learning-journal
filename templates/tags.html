@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<section>
+    <div class="container">
+        <div class="entry-list">
+            {% for tag in context %}
+            <article>
+                <h2><a href="{{ url_for('tags', slug=tag.slug) }}">{{ tag.title }}</a></h2>
+            </article>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

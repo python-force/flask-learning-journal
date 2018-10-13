@@ -27,8 +27,21 @@ class User(UserMixin, Model):
             raise ValueError("User already exists")
 
 
+class Tag(Model):
+    title = CharField(max_length=15)
+    slug = CharField(max_length=50)
+
+    class Meta:
+        database = DATABASE
+
+    def __init__(self, *args, **kwargs):
+        if not 'slug' in kwargs:
+            kwargs['slug'] = slugify(kwargs.get('title', ''))
+        super().__init__(*args, **kwargs)
+
 class Journal(Model):
-    user = ForeignKeyField(model=User, related_name='journals')
+    user = ForeignKeyField(User, related_name='journals')
+    tags = ManyToManyField(Tag, backref='tags')
     pub_date = DateTimeField(default=datetime.datetime.now)
     title = CharField(max_length=30)
     slug = CharField(max_length=50)
@@ -47,7 +60,9 @@ class Journal(Model):
             kwargs['slug'] = slugify(kwargs.get('title', ''))
         super().__init__(*args, **kwargs)
 
+TagJornal = Journal.tags.get_through_model()
+
 def initialize():
     DATABASE.connect()
-    DATABASE.create_tables([User, Journal], safe=True)
+    DATABASE.create_tables([User, Tag, Journal, TagJornal], safe=True)
     DATABASE.close()

@@ -9,6 +9,7 @@
         <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
         <link rel="stylesheet" href="/static/css/normalize.css">
         <link rel="stylesheet" href="/static/css/site.css">
+        <link rel="stylesheet" href="/static/css/custom.css">
     </head>
     <body>
     {% with messages=get_flashed_messages() %}
@@ -27,6 +28,7 @@
                 <div class="site-header">
                     <a class="logo" href="{{ url_for('index') }}"><i class="material-icons">library_books</i></a>
                     <a class="button icon-right" href="{{ url_for('createjournal') }}"><span>New Entry</span> <i class="material-icons">add</i></a>
+                    <a class="button icon-right" href="{{ url_for('createtag') }}"><span>Add Tag</span> <i class="material-icons">add</i></a>
                 </div>
             </div>
         </header>
