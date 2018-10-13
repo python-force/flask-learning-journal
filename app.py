@@ -107,6 +107,13 @@ def editentry(slug=None):
         form.resources.data = context.resources
     return render_template('edit.html', form=form)
 
+
+@app.route('/entries/delete/<slug>', methods=('GET', 'POST'))
+def deleteentry(slug=None):
+    models.Journal.delete().where(models.Journal.slug == slug).execute()
+    flash("Journal Deleted!", "success")
+    return redirect(url_for('index'))
+
 @app.route('/entry', methods=('GET', 'POST'))
 @login_required
 def createjournal():
