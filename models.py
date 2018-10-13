@@ -33,13 +33,14 @@ class Journal(Model):
     title = CharField(max_length=30)
     slug = CharField(max_length=50)
     date = DateTimeField()
-    time_spent = IntegerField()
+    time_spent = IntegerField(min)
     learned = TextField()
     resources = TextField()
 
     class Meta:
         database = DATABASE
         order_by = ('-pub_date',)
+
 
     def __init__(self, *args, **kwargs):
         if not 'slug' in kwargs:

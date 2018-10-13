@@ -12,6 +12,10 @@ def email_exist(form, field):
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User with that email already exists.')
 
+def positive_value(form, field):
+    if field.data < 0:
+        raise ValidationError('The number must be positive and greater than 0')
+
 class RegistrationForm(Form):
     email = StringField(
         'Email',
@@ -42,6 +46,6 @@ class LoginForm(Form):
 class JournalForm(Form):
     title = StringField('Title', validators=[DataRequired()])
     date = DateField('Date', validators=[DataRequired()])
-    time_spent = IntegerField('Time Spent', validators=[DataRequired()])
+    time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
     learned = TextAreaField('What I learned', validators=[DataRequired()])
     resources = PageDownField('Resources to Remember', validators=[DataRequired()])

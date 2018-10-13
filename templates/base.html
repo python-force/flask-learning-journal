@@ -11,6 +11,17 @@
         <link rel="stylesheet" href="/static/css/site.css">
     </head>
     <body>
+    {% with messages=get_flashed_messages() %}
+    {% if messages %}
+        <div class="messages">
+          {% for message in messages %}
+          <div class="message">
+            {{ message }}
+          </div>
+          {% endfor %}
+        </div>
+    {% endif %}
+    {% endwith %}
         <header>
             <div class="container">
                 <div class="site-header">
