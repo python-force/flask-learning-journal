@@ -6,11 +6,15 @@ from wtforms.validators import ValidationError, DataRequired, Email, Regexp, Len
 
 from flask_pagedown.fields import PageDownField
 
-from models import User
+from models import User, Journal
 
 def email_exist(form, field):
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User with that email already exists.')
+
+def title_exist(form, field):
+    if Journal.select().where(Journal.title == field.data).exists():
+        raise ValidationError('Journal with this title already exists, to edit the this entry, go to main menu and click edit.')
 
 def positive_value(form, field):
     if field.data < 0:
@@ -44,7 +48,7 @@ class LoginForm(Form):
 
 
 class JournalForm(Form):
-    title = StringField('Title', validators=[DataRequired()])
+    title = StringField('Title', validators=[DataRequired(), title_exist])
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
     learned = TextAreaField('What I learned', validators=[DataRequired()])
