@@ -73,8 +73,8 @@ def login():
 
 @app.route('/')
 def index():
-    all_journals = models.Journal.select()
-    return render_template('index.html', all_journals=all_journals)
+    context = models.Journal.select()
+    return render_template('index.html', context=context)
 
 @app.route('/entries')
 @app.route('/entries/<slug>')
