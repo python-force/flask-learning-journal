@@ -3,4 +3,5 @@ venv
 idea
 .coverage
 *.pyc
-
+htmlcov
+__pycache__
