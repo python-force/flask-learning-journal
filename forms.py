@@ -1,6 +1,6 @@
 from flask_wtf import Form
 
-from wtforms import StringField, PasswordField, TextAreaField, IntegerField, SelectMultipleField
+from wtforms import StringField, PasswordField, TextAreaField, IntegerField, SelectMultipleField, widgets
 from wtforms.fields.html5 import DateField
 from wtforms.validators import ValidationError, DataRequired, Email, Regexp, Length, EqualTo
 
@@ -54,9 +54,18 @@ class TagForm(Form):
     title = StringField('Title', validators=[DataRequired(), tag_title_exist])
 
 class JournalForm(Form):
-    tags = SelectMultipleField('Tags', choices=[('1', 'Space to Mars'), ('2', 'Earth')])
+    tags = SelectMultipleField(
+        'Tags',
+        coerce=int)
+
     title = StringField('Title', validators=[DataRequired(), title_exist])
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
     learned = TextAreaField('What I learned', validators=[DataRequired()])
     resources = PageDownField('Resources to Remember', validators=[DataRequired()])
+
+    #def set_choices(self):
+        #self.tags.choices = [(tag.id, tag.title) for tag in Tag.select()]
+
+    #def set_choices(self):
+        #self.tags.choices = [('1', 'Space to Mars'), ('2', 'Earth')]

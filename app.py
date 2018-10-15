@@ -128,8 +128,10 @@ def createtag():
 @login_required
 def createjournal():
     form = forms.JournalForm()
+    form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
         models.Journal.create(user=g.user.id,
+                              tags=form.tags.data,
                               title=form.title.data,
                               date=form.date.data,
                               time_spent=form.time_spent.data,
