@@ -93,12 +93,13 @@ def editentry(slug=None):
     form = forms.JournalForm()
     form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
-        context.update(title=form.title.data,
-                        tags = form.tags.data,
-                        date=form.date.data,
-                        time_spent=form.time_spent.data,
-                        learned=form.learned.data,
-                        resources=form.resources.data).where(models.Journal.slug == slug)
+        context.title=form.title.data
+        context.tags=form.tags.data
+        context.date = form.date.data
+        context.time_spent = form.time_spent.data
+        context.learned = form.learned.data
+        context.resources = form.resources.data
+        context.save()
         flash("Journal Posted! Thanks!", "success")
         return redirect(url_for('index'))
     else:
