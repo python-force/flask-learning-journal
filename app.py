@@ -91,12 +91,14 @@ def entries(slug=None):
 def editentry(slug=None):
     context = models.Journal.select().where(models.Journal.slug == slug).get()
     form = forms.JournalForm()
+    form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
-        models.Journal.update(title=form.title.data,
-                              date=form.date.data,
-                              time_spent=form.time_spent.data,
-                              learned=form.learned.data,
-                              resources=form.resources.data).where(models.Journal.slug == slug).execute()
+        context.update(title=form.title.data,
+                        tags = form.tags.data,
+                        date=form.date.data,
+                        time_spent=form.time_spent.data,
+                        learned=form.learned.data,
+                        resources=form.resources.data).where(models.Journal.slug == slug)
         flash("Journal Posted! Thanks!", "success")
         return redirect(url_for('index'))
     else:
@@ -130,13 +132,13 @@ def createjournal():
     form = forms.JournalForm()
     form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
-        models.Journal.create(user=g.user.id,
-                              tags=form.tags.data,
-                              title=form.title.data,
-                              date=form.date.data,
-                              time_spent=form.time_spent.data,
-                              learned=form.learned.data,
-                              resources=form.resources.data)
+        journal = models.Journal.create(user=g.user.id,
+                                        title=form.title.data,
+                                        date=form.date.data,
+                                        time_spent=form.time_spent.data,
+                                        learned=form.learned.data,
+                                        resources=form.resources.data)
+        journal.tags.add(form.tags.data)
         flash("Journal Posted! Thanks!", "success")
         return redirect(url_for('index'))
     return render_template('new.html', form=form)

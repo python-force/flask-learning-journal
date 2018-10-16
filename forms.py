@@ -63,9 +63,3 @@ class JournalForm(Form):
     time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
     learned = TextAreaField('What I learned', validators=[DataRequired()])
     resources = PageDownField('Resources to Remember', validators=[DataRequired()])
-
-    #def set_choices(self):
-        #self.tags.choices = [(tag.id, tag.title) for tag in Tag.select()]
-
-    #def set_choices(self):
-        #self.tags.choices = [('1', 'Space to Mars'), ('2', 'Earth')]
