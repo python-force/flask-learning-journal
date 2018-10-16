@@ -12,14 +12,6 @@ def email_exist(form, field):
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User with that email already exists.')
 
-def title_exist(form, field):
-    if Journal.select().where(Journal.title == field.data).exists():
-        raise ValidationError('Record with this title already exists, to edit the this entry, go to main menu and click edit.')
-
-def tag_title_exist(form, field):
-    if Tag.select().where(Tag.title == field.data).exists():
-        raise ValidationError('Record with this title already exists, to edit the this entry, go to main menu and click edit.')
-
 def positive_value(form, field):
     if field.data < 0:
         raise ValidationError('The number must be positive and greater than 0')
@@ -51,14 +43,14 @@ class LoginForm(Form):
     password = PasswordField('Password', validators=[DataRequired()])
 
 class TagForm(Form):
-    title = StringField('Title', validators=[DataRequired(), tag_title_exist])
+    title = StringField('Title', validators=[DataRequired()])
 
 class JournalForm(Form):
     tags = SelectMultipleField(
         'Tags',
         coerce=int)
 
-    title = StringField('Title', validators=[DataRequired(), title_exist])
+    title = StringField('Title', validators=[DataRequired()])
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
     learned = TextAreaField('What I learned', validators=[DataRequired()])

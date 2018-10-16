@@ -44,7 +44,7 @@ class Journal(Model):
     tags = ManyToManyField(Tag, backref='tags')
     pub_date = DateTimeField(default=datetime.datetime.now)
     title = CharField(max_length=30)
-    slug = CharField(max_length=50)
+    slug = CharField(unique=True, max_length=50)
     date = DateTimeField()
     time_spent = IntegerField(min)
     learned = TextField()
@@ -54,11 +54,11 @@ class Journal(Model):
         database = DATABASE
         order_by = ('-pub_date',)
 
-
-    def __init__(self, *args, **kwargs):
-        if not 'slug' in kwargs:
-            kwargs['slug'] = slugify(kwargs.get('title', ''))
-        super().__init__(*args, **kwargs)
+    def save(self, *args, **kwargs):
+        slug = slugify(self.title)
+        if self.slug != slug:
+            self.slug = slug
+        return super(Journal, self).save()
 
 TagJornal = Journal.tags.get_through_model()
 
