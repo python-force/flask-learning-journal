@@ -15,13 +15,11 @@
                 </div>
                 <div class="entry">
                     <h3>What I Learned:</h3>
-                    <p>{{ context.learned }}</p>
+                    {{ context.learned|markdown }}
                 </div>
                 <div class="entry">
                     <h3>Resources to Remember:</h3>
-                    {% filter markdown %}
-                    {{ context.resources | markdown }}
-                    {% endfilter %}
+                    {{ context.resources|markdown }}
                 </div>
                 <div class="tags">
                     <h3>Tags:</h3>

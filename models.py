@@ -6,6 +6,7 @@ from peewee import *
 
 DATABASE = SqliteDatabase('journal.db')
 
+
 class User(UserMixin, Model):
     pub_date = DateTimeField(default=datetime.datetime.now)
     email = CharField(unique=True)
@@ -14,7 +15,6 @@ class User(UserMixin, Model):
     class Meta:
         database = DATABASE
         order_by = ('-pub_date',)
-
 
     @classmethod
     def create_user(cls, email, password):
@@ -39,6 +39,7 @@ class Tag(Model):
             kwargs['slug'] = slugify(kwargs.get('title', ''))
         super().__init__(*args, **kwargs)
 
+
 class Journal(Model):
     user = ForeignKeyField(User, related_name='journals')
     tags = ManyToManyField(Tag, backref='tags')
@@ -60,7 +61,9 @@ class Journal(Model):
             self.slug = slug
         return super(Journal, self).save()
 
+
 TagJornal = Journal.tags.get_through_model()
+
 
 def initialize():
     DATABASE.connect()
