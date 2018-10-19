@@ -1,6 +1,7 @@
 from flask import Flask, g, render_template, flash, url_for, redirect
 from flask_bcrypt import check_password_hash
-from flask_login import LoginManager, login_user, logout_user, login_required, current_user
+from flask_login import (LoginManager, login_user, logout_user,
+                         login_required, current_user)
 from flask_pagedown import PageDown
 from flaskext.markdown import Markdown
 
@@ -21,10 +22,12 @@ login_manager.login_view = 'login'
 pagedown = PageDown(app)
 Markdown(app)
 
+
 @app.template_filter()
 def datetimefilter(value, format='%B %d, %Y'):
     """Convert a datetime to a different format."""
     return value.strftime(format)
+
 
 app.jinja_env.filters['datetimefilter'] = datetimefilter
 
@@ -36,11 +39,13 @@ def before_request():
     g.db.connect()
     g.user = current_user
 
+
 @app.after_request
 def after_request(response):
     """Close the database connection after each request."""
     g.db.close()
     return response
+
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
@@ -54,12 +59,14 @@ def register():
         return redirect(url_for('index'))
     return render_template('register.html', form=form)
 
+
 @login_manager.user_loader
 def load_user(userid):
     try:
         return models.User.get(models.User.id == userid)
     except models.DoesNotExist:
         return None
+
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
@@ -78,6 +85,7 @@ def login():
                 flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)
 
+
 @app.route('/logout')
 @login_required
 def logout():
@@ -85,10 +93,12 @@ def logout():
     flash("You've been logged out! Come back soon!", "success")
     return redirect(url_for('index'))
 
+
 @app.route('/')
 def index():
     context = models.Journal.select()
     return render_template('index.html', context=context)
+
 
 @app.route('/entries')
 @app.route('/entries/<slug>')
@@ -96,10 +106,12 @@ def entries(slug=None):
     template = 'index.html'
     all_journals = models.Journal.select()
     context = all_journals
-    if slug != None:
-        context = models.Journal.select().where(models.Journal.slug==slug).get()
+    if slug is not None:
+        context = models.Journal.select().\
+            where(models.Journal.slug == slug).get()
         template = 'detail.html'
     return render_template(template, context=context)
+
 
 @app.route('/entries/edit/<slug>', methods=('GET', 'POST'))
 @login_required
@@ -108,8 +120,8 @@ def editentry(slug=None):
     form = forms.JournalForm()
     form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
-        context.title=form.title.data
-        context.tags=form.tags.data
+        context.title = form.title.data
+        context.tags = form.tags.data
         context.date = form.date.data
         context.time_spent = form.time_spent.data
         context.learned = form.learned.data
@@ -133,6 +145,7 @@ def deleteentry(slug=None):
     flash("Journal Deleted!", "success")
     return redirect(url_for('index'))
 
+
 @app.route('/addtag', methods=('GET', 'POST'))
 @login_required
 def createtag():
@@ -142,6 +155,7 @@ def createtag():
         flash("Tag Created! Thanks!", "success")
         return redirect(url_for('index'))
     return render_template('addtag.html', form=form)
+
 
 @app.route('/entry', methods=('GET', 'POST'))
 @login_required
@@ -160,20 +174,21 @@ def createjournal():
         return redirect(url_for('index'))
     return render_template('new.html', form=form)
 
+
 @app.route('/tags')
 @app.route('/tags/<slug>')
 def tags(slug=None):
     template = 'tags.html'
     all_tags = models.Tag.select()
     context = all_tags
-    if slug != None:
-        context = (models.Journal
-                           .select()
-                           .join(models.TagJornal)
-                           .join(models.Tag)
-                           .where(models.Tag.slug == slug))
+    if slug is not None:
+        context = (models.Journal.select().
+                   join(models.TagJornal).
+                   join(models.Tag).
+                   where(models.Tag.slug == slug))
         template = 'index.html'
     return render_template(template, context=context)
+
 
 if __name__ == '__main__':
     models.initialize()
