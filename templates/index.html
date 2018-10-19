@@ -7,7 +7,7 @@
             {% for journal in context %}
             <article>
                 <h2><a href="{{ url_for('entries', slug=journal.slug) }}">{{ journal.title }}</a></h2>
-                <time datetime="2016-01-31">{{ journal.date }}</time>
+                <time datetime="{{ journal.date.strftime('%Y-%m-%d') }}">{{ journal.date|datetimefilter }}</time>
                 <p>Tags: {% for tag in journal.tags %}<a href="{{ url_for('tags', slug=tag.slug) }}">{{ tag.title }}</a>{% if loop.last %}{% else %}, {% endif %}{% endfor %}</p>
             </article>
             {% endfor %}

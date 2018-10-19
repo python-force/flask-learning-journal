@@ -15,10 +15,12 @@
                 {{ render_field(form.title) }}
                 {{ render_field(form.date) }}
                 {{ render_field(form.time_spent) }}
-                {{ render_field(form.learned) }}
-                {{ form.resources(rows=10) }}
+                <label for="resources">What I've learned</label>
+                {{ render_field(form.learned(rows=10)) }}
+                <label for="resources">Resources to Remember</label>
+                {{ render_field(form.resources(rows=10)) }}
                 <input type="submit" value="Publish Entry" class="button">
-                <a href="#" class="button button-secondary">Cancel</a>
+                <a href="{{ url_for('index') }}" class="button button-secondary">Cancel</a>
             </form>
         </div>
     </div>

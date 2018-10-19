@@ -21,6 +21,13 @@ login_manager.login_view = 'login'
 pagedown = PageDown(app)
 Markdown(app)
 
+@app.template_filter()
+def datetimefilter(value, format='%B %d, %Y'):
+    """Convert a datetime to a different format."""
+    return value.strftime(format)
+
+app.jinja_env.filters['datetimefilter'] = datetimefilter
+
 
 @app.before_request
 def before_request():
@@ -71,6 +78,13 @@ def login():
                 flash("Your email or password doesn't match!", "error")
     return render_template('login.html', form=form)
 
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    flash("You've been logged out! Come back soon!", "success")
+    return redirect(url_for('index'))
+
 @app.route('/')
 def index():
     context = models.Journal.select()
@@ -88,6 +102,7 @@ def entries(slug=None):
     return render_template(template, context=context)
 
 @app.route('/entries/edit/<slug>', methods=('GET', 'POST'))
+@login_required
 def editentry(slug=None):
     context = models.Journal.select().where(models.Journal.slug == slug).get()
     form = forms.JournalForm()
@@ -112,6 +127,7 @@ def editentry(slug=None):
 
 
 @app.route('/entries/delete/<slug>', methods=('GET', 'POST'))
+@login_required
 def deleteentry(slug=None):
     models.Journal.delete().where(models.Journal.slug == slug).execute()
     flash("Journal Deleted!", "success")

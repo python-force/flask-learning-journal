@@ -27,8 +27,14 @@
             <div class="container">
                 <div class="site-header">
                     <a class="logo" href="{{ url_for('index') }}"><i class="material-icons">library_books</i></a>
+                    {% if g.user.is_authenticated %}
+                    <a class="button icon-right" href="{{ url_for('logout') }}"><span>Logout</span> <i class="material-icons">add</i></a>
                     <a class="button icon-right" href="{{ url_for('createjournal') }}"><span>New Entry</span> <i class="material-icons">add</i></a>
                     <a class="button icon-right" href="{{ url_for('createtag') }}"><span>Add Tag</span> <i class="material-icons">add</i></a>
+                    {% else %}
+                    <a class="button icon-right" href="{{ url_for('login') }}"><span>Login</span> <i class="material-icons">add</i></a>
+                    <a class="button icon-right" href="{{ url_for('register') }}"><span>Register</span> <i class="material-icons">add</i></a>
+                    {% endif %}
                 </div>
             </div>
         </header>

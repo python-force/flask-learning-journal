@@ -8,7 +8,7 @@
         <div class="entry-list single">
             <article>
                 <h1>{{ context.title }}</h1>
-                <time datetime="2016-01-31">{{ context.date }} - January 31, 2016</time>
+                <time datetime="{{ context.date.strftime('%Y-%m-%d') }}">{{ context.date|datetimefilter }}</time>
                 <div class="entry">
                     <h3>Time Spent: </h3>
                     <p>{{ context.time_spent }} Hours</p>
@@ -22,6 +22,10 @@
                     {% filter markdown %}
                     {{ context.resources | markdown }}
                     {% endfilter %}
+                </div>
+                <div class="tags">
+                    <h3>Tags:</h3>
+                    <p>Tags: {% for tag in context.tags %}<a href="{{ url_for('tags', slug=tag.slug) }}">{{ tag.title }}</a>{% if loop.last %}{% else %}, {% endif %}{% endfor %}</p>
                 </div>
             </article>
         </div>

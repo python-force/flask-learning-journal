@@ -53,5 +53,5 @@ class JournalForm(Form):
     title = StringField('Title', validators=[DataRequired()])
     date = DateField('Date', validators=[DataRequired()])
     time_spent = IntegerField('Time Spent', validators=[DataRequired(), positive_value])
-    learned = TextAreaField('What I learned', validators=[DataRequired()])
+    learned = PageDownField('What I learned', validators=[DataRequired()])
     resources = PageDownField('Resources to Remember', validators=[DataRequired()])
