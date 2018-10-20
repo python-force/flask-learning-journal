@@ -24,6 +24,7 @@ class BaseTestCase(unittest.TestCase):
 
     @staticmethod
     def create_users(count=2):
+        """Create 2 users"""
         for i in range(count):
             User.create_user(
                 email='test_{}@example.com'.format(i),
@@ -31,6 +32,7 @@ class BaseTestCase(unittest.TestCase):
             )
 
     def test_create_user(self):
+        """Test User"""
         self.create_users()
         self.assertEqual(User.select().count(), 2)
         self.assertNotEqual(
@@ -39,6 +41,7 @@ class BaseTestCase(unittest.TestCase):
         )
 
     def test_create_duplicate_user(self):
+        """Test duplicate user"""
         self.create_users()
         with self.assertRaises(ValueError):
             User.create_user(
@@ -47,6 +50,7 @@ class BaseTestCase(unittest.TestCase):
             )
 
     def test_journal_creation(self):
+        """Create Journal / 1 Entry"""
         self.create_users()
         user = User.select().get()
         Journal.create(
@@ -63,6 +67,7 @@ class BaseTestCase(unittest.TestCase):
         self.assertEqual(journal.user, user)
 
     def test_tag_creation(self):
+        """Create Tag"""
         self.create_users()
         Tag.create(
             title='Space',

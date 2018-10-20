@@ -12,16 +12,19 @@ from models import User
 
 
 def email_exist(form, field):
+    """Duplicate Email check"""
     if User.select().where(User.email == field.data).exists():
         raise ValidationError('User with that email already exists.')
 
 
 def positive_value(form, field):
+    """Positive value for Time Spent"""
     if field.data < 0:
         raise ValidationError('The number must be positive and greater than 0')
 
 
 class RegistrationForm(Form):
+    """Registration Form"""
     email = StringField(
         'Email',
         validators=[
@@ -44,15 +47,18 @@ class RegistrationForm(Form):
 
 
 class LoginForm(Form):
+    """Login Form"""
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
 
 
 class TagForm(Form):
+    """Tag Form"""
     title = StringField('Title', validators=[DataRequired()])
 
 
 class JournalForm(Form):
+    """Journal Form"""
     tags = SelectMultipleField(
         'Tags',
         coerce=int)

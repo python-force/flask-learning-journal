@@ -49,6 +49,7 @@ def after_request(response):
 
 @app.route('/register', methods=('GET', 'POST'))
 def register():
+    """Register New User"""
     form = forms.RegistrationForm()
     if form.validate_on_submit():
         flash("Yay, you registered!", "success")
@@ -62,6 +63,7 @@ def register():
 
 @login_manager.user_loader
 def load_user(userid):
+    """Load User"""
     try:
         return models.User.get(models.User.id == userid)
     except models.DoesNotExist:
@@ -70,6 +72,7 @@ def load_user(userid):
 
 @app.route('/login', methods=('GET', 'POST'))
 def login():
+    """Login User"""
     form = forms.LoginForm()
     if form.validate_on_submit():
         try:
@@ -89,6 +92,7 @@ def login():
 @app.route('/logout')
 @login_required
 def logout():
+    """Log Out User"""
     logout_user()
     flash("You've been logged out! Come back soon!", "success")
     return redirect(url_for('index'))
@@ -96,6 +100,7 @@ def logout():
 
 @app.route('/')
 def index():
+    """Homepage with all Journals listed"""
     context = models.Journal.select()
     return render_template('index.html', context=context)
 
@@ -103,6 +108,7 @@ def index():
 @app.route('/entries')
 @app.route('/entries/<slug>')
 def entries(slug=None):
+    """All Journals listed unless slug available - load details"""
     template = 'index.html'
     all_journals = models.Journal.select()
     context = all_journals
@@ -116,6 +122,7 @@ def entries(slug=None):
 @app.route('/entries/edit/<slug>', methods=('GET', 'POST'))
 @login_required
 def editentry(slug=None):
+    """Edit 1 Journal"""
     context = models.Journal.select().where(models.Journal.slug == slug).get()
     form = forms.JournalForm()
     form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
@@ -141,6 +148,7 @@ def editentry(slug=None):
 @app.route('/entries/delete/<slug>', methods=('GET', 'POST'))
 @login_required
 def deleteentry(slug=None):
+    """Delete Journal"""
     models.Journal.delete().where(models.Journal.slug == slug).execute()
     flash("Journal Deleted!", "success")
     return redirect(url_for('index'))
@@ -149,6 +157,7 @@ def deleteentry(slug=None):
 @app.route('/addtag', methods=('GET', 'POST'))
 @login_required
 def createtag():
+    """Create Tag for Journal"""
     form = forms.TagForm()
     if form.validate_on_submit():
         models.Tag.create(title=form.title.data,)
@@ -160,6 +169,7 @@ def createtag():
 @app.route('/entry', methods=('GET', 'POST'))
 @login_required
 def createjournal():
+    """Create Journal / New Entry"""
     form = forms.JournalForm()
     form.tags.choices = [(tag.id, tag.title) for tag in models.Tag.select()]
     if form.validate_on_submit():
@@ -178,6 +188,7 @@ def createjournal():
 @app.route('/tags')
 @app.route('/tags/<slug>')
 def tags(slug=None):
+    """Load all Hournals with 1 particular Tag"""
     template = 'tags.html'
     all_tags = models.Tag.select()
     context = all_tags
